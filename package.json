@@ -1,0 +1,27 @@
+{
+  "name": "projeto-integrador-stenio-vistoria",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev --port 3000",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "preview:static": "npx serve .output/public -p 3000",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.106.2",
+    "@tailwindcss/vite": "^4.2.2",
+    "nuxt": "3.16.0",
+    "tailwindcss": "^4.2.2",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}

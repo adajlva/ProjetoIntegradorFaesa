@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@source "../../components/**/*.vue";
+@source "../../**/*.vue";
+
+@theme {
+  --color-primary: #4a7f34;
+  --color-primary-hover: #3f6e2c;
+  --color-primary-active: #355e25;
+
+  --color-secondary: #6b7280;
+  --color-secondary-hover: #5b6370;
+  --color-secondary-active: #4b5563;
+
+  --color-danger: #bc191c;
+  --color-danger-hover: #a31518;
+  --color-danger-active: #8a1214;
+
+  --color-label-gray: #6d6d6d;
+
+  --color-sidebar-bg: #2f3437;
+  --color-sidebar-footer-bg: #3f4549;
+  --color-sidebar-text: #d1d1d1;
+  --color-sidebar-text-light: #f2f3f3;
+  --color-sidebar-divider: #53933a;
+  --color-sidebar-border: #d1d1d1;
+  --color-sidebar-active: #53933a;
+  --color-sidebar-result-header-bg: #4a4f53;
+  --color-sidebar-placeholder: #888888;
+
+  --radius-button: 8px;
+
+  --font-sans: 'Poppins', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+}
+
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #4a4f53 transparent;
+}
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #4a4f53;
+  border-radius: 4px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #5a5f63;
+}
