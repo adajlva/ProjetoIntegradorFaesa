@@ -98,7 +98,7 @@ npm run preview
 
 ## Evidências
 
-Vídeo de demonstração: https://youtu.be/RuZNws2nUxA
+"PENDÊNTE"
 
 ## Grupo 36 — FAESA
 
