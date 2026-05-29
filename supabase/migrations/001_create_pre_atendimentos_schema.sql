@@ -10,6 +10,8 @@ create table public.clientes (
   cidade text,
   uf text,
   numero_endereco text,
+  placa text,
+  renavam text,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

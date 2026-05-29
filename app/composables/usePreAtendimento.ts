@@ -2,6 +2,16 @@ import type { VistoriaFormData } from '~/utils/validation'
 import { onlyDigits } from '~/utils/masks'
 import type { ClienteRow } from '~/types/database'
 
+export interface ClienteDados {
+  cliente: ClienteRow
+  placa: string | null
+  renavam: string | null
+}
+
+function normalizePlaca(placa: string) {
+  return placa.toUpperCase().replace(/[^A-Z0-9]/g, '')
+}
+
 function formToClientePayload(form: VistoriaFormData) {
   return {
     cpf: onlyDigits(form.cpfCliente),
@@ -13,6 +23,8 @@ function formToClientePayload(form: VistoriaFormData) {
     cidade: form.cidade.trim() || null,
     uf: form.uf.trim() || null,
     numero_endereco: form.numeroEndereco.trim() || null,
+    placa: normalizePlaca(form.placa) || null,
+    renavam: onlyDigits(form.renavam) || null,
   }
 }
 
@@ -38,7 +50,7 @@ function formToPreAtendimentoPayload(
     cidade: form.cidade.trim(),
     uf: form.uf.trim(),
     numero_endereco: form.numeroEndereco.trim(),
-    placa: form.placa.toUpperCase().replace(/[^A-Z0-9]/g, ''),
+    placa: normalizePlaca(form.placa),
     renavam: onlyDigits(form.renavam),
     observacoes_documento: form.observacoesDocumento.trim() || null,
     mensagem_whatsapp: mensagemWhatsapp,
@@ -55,9 +67,26 @@ export function usePreAtendimento() {
     return $supabase
   }
 
-  async function findClienteByCpf(cpfDigits: string): Promise<ClienteRow | null> {
+  async function findUltimoVeiculoByCpf(cpfDigits: string) {
     const supabase = requireSupabase()
     const { data, error } = await supabase
+      .from('pre_atendimentos')
+      .select('placa, renavam')
+      .eq('cpf_cliente', cpfDigits)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (error) {
+      throw error
+    }
+
+    return data
+  }
+
+  async function findClienteByCpf(cpfDigits: string): Promise<ClienteDados | null> {
+    const supabase = requireSupabase()
+    const { data: cliente, error } = await supabase
       .from('clientes')
       .select('*')
       .eq('cpf', cpfDigits)
@@ -67,7 +96,20 @@ export function usePreAtendimento() {
       throw error
     }
 
-    return data
+    if (!cliente) {
+      return null
+    }
+
+    let placa = cliente.placa
+    let renavam = cliente.renavam
+
+    if (!placa || !renavam) {
+      const ultimoVeiculo = await findUltimoVeiculoByCpf(cpfDigits)
+      placa = placa ?? ultimoVeiculo?.placa ?? null
+      renavam = renavam ?? ultimoVeiculo?.renavam ?? null
+    }
+
+    return { cliente, placa, renavam }
   }
 
   async function savePreAtendimento(form: VistoriaFormData, mensagemWhatsapp: string) {

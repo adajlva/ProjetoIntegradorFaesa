@@ -104,12 +104,14 @@ async function lookupClienteByCpf(cpf: string) {
   clienteFeedback.value = ''
 
   try {
-    const cliente = await findClienteByCpf(digits)
+    const dados = await findClienteByCpf(digits)
 
-    if (!cliente) {
+    if (!dados) {
       lastLookedUpCpf.value = digits
       return
     }
+
+    const { cliente, placa, renavam } = dados
 
     form.nomeCliente = cliente.nome
 
@@ -123,6 +125,14 @@ async function lookupClienteByCpf(cpf: string) {
       form.numeroEndereco = cliente.numero_endereco ?? ''
       addressVisible.value = Boolean(cliente.logradouro && cliente.bairro)
       lastFetchedCep.value = onlyDigits(cliente.cep)
+    }
+
+    if (placa) {
+      form.placa = maskPlaca(placa)
+    }
+
+    if (renavam) {
+      form.renavam = maskRenavam(renavam)
     }
 
     syncCondutorFromCliente()

@@ -9,6 +9,8 @@ export interface ClienteRow {
   cidade: string | null
   uf: string | null
   numero_endereco: string | null
+  placa: string | null
+  renavam: string | null
   created_at: string
   updated_at: string
 }
