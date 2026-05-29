@@ -20,26 +20,30 @@ useHead({
   ],
 })
 
-const form = reactive<VistoriaFormData>({
-  nomeCliente: '',
-  cpfCliente: '',
-  titularDiferente: false,
-  nomeTitularLaudo: '',
-  cpfTitularLaudo: '',
-  condutorMesmoCliente: true,
-  nomeCondutor: '',
-  cpfCondutor: '',
-  cep: '',
-  logradouro: '',
-  complemento: '',
-  bairro: '',
-  cidade: '',
-  uf: '',
-  numeroEndereco: '',
-  placa: '',
-  renavam: '',
-  observacoesDocumento: '',
-})
+function createInitialForm(): VistoriaFormData {
+  return {
+    nomeCliente: '',
+    cpfCliente: '',
+    titularDiferente: false,
+    nomeTitularLaudo: '',
+    cpfTitularLaudo: '',
+    condutorMesmoCliente: true,
+    nomeCondutor: '',
+    cpfCondutor: '',
+    cep: '',
+    logradouro: '',
+    complemento: '',
+    bairro: '',
+    cidade: '',
+    uf: '',
+    numeroEndereco: '',
+    placa: '',
+    renavam: '',
+    observacoesDocumento: '',
+  }
+}
+
+const form = reactive<VistoriaFormData>(createInitialForm())
 
 const errors = ref<Partial<Record<VistoriaFormField, string>>>({})
 const generatedMessage = ref('')
@@ -56,6 +60,20 @@ const lastLookedUpCpf = ref('')
 const { findClienteByCpf, savePreAtendimento } = usePreAtendimento()
 
 const hasMessage = computed(() => generatedMessage.value.length > 0)
+
+function clearFields() {
+  Object.assign(form, createInitialForm())
+  errors.value = {}
+  generatedMessage.value = ''
+  copyFeedback.value = ''
+  saveFeedback.value = ''
+  clienteFeedback.value = ''
+  addressVisible.value = false
+  lastFetchedCep.value = ''
+  lastLookedUpCpf.value = ''
+  cepLoading.value = false
+  clienteLoading.value = false
+}
 
 function clearError(field: VistoriaFormField) {
   if (errors.value[field]) {
@@ -590,7 +608,10 @@ async function copyMessage() {
             </div>
           </section>
 
-          <div class="mt-[40px] flex justify-end border-t border-[#d1d1d1] pt-4">
+          <div class="mt-[40px] flex flex-wrap justify-end gap-3 border-t border-[#d1d1d1] pt-4">
+            <AtomsBaseButton type="button" variant="secondary" size="lg" @click="clearFields">
+              Limpar campos
+            </AtomsBaseButton>
             <AtomsBaseButton type="submit" variant="primary" size="lg">
               Gerar mensagem
             </AtomsBaseButton>
