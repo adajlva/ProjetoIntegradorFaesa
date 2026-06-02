@@ -34,18 +34,22 @@ Ao digitar um CPF com 11 dígitos, o sistema consulta `clientes` e preenche auto
 
 ### Configuração
 
-Copie `.env.example` para `.env` e preencha as variáveis do projeto Supabase:
+Copie `.env.example` para `.env` e preencha as variáveis do projeto Supabase (**somente no servidor**, nunca no front):
 
 ```bash
-NUXT_PUBLIC_SUPABASE_URL=...
-NUXT_PUBLIC_SUPABASE_ANON_KEY=...
+NUXT_SUPABASE_URL=...
+NUXT_SUPABASE_ANON_KEY=...
 ```
 
-A migration SQL está em `supabase/migrations/001_create_pre_atendimentos_schema.sql`.
+A chave **anon** fica em *Project Settings → API* no dashboard Supabase. Ela fica só no servidor Nuxt (não é exposta ao browser). O acesso ao banco usa Edge Functions (`get-cliente-by-cpf`, `save-pre-atendimento`) com `service_role` injetada pelo Supabase — você não precisa colar a service role no `.env`.
+
+As migrations SQL estão em `supabase/migrations/`. A `002_lock_down_anon_access.sql` revoga acesso direto via anon key (PostgREST) às tabelas `clientes` e `pre_atendimentos`. O front chama rotas Nitro (`/api/clientes/:cpf`, `/api/pre-atendimentos`), que invocam as Edge Functions.
+
+**Deploy:** use `npm run build` + servidor Nitro (`node .output/server/index.mjs`). Export estático (`nuxt generate`) não inclui a API.
 
 ## LGPD
 
-Os dados pessoais são armazenados no Supabase para reutilização em novos pré-atendimentos. Em produção, revise políticas de retenção, consentimento e acesso (RLS/autenticação).
+Os dados pessoais são armazenados no Supabase para reutilização em novos pré-atendimentos. O navegador não acessa o PostgREST diretamente; consultas passam pelo backend e pelas Edge Functions. Em produção, revise políticas de retenção, consentimento e autenticação da equipe.
 
 ## Componentes
 
@@ -84,8 +88,8 @@ O arquivo `.env` não é versionado. Use `.env.example` como referência das var
 
 | Variável | Descrição |
 |----------|-----------|
-| `NUXT_PUBLIC_SUPABASE_URL` | URL do projeto Supabase |
-| `NUXT_PUBLIC_SUPABASE_ANON_KEY` | Chave anon (publishable) do Supabase |
+| `NUXT_SUPABASE_URL` | URL do projeto Supabase |
+| `NUXT_SUPABASE_ANON_KEY` | Chave anon do Supabase (somente servidor) |
 
 4. Faça o deploy. Cada push na branch `main` gera um novo deploy.
 
