@@ -3,6 +3,7 @@ import { computed, reactive, ref, watch } from 'vue'
 import logoStenio from '~/assets/images/logo-stenio-vistoria.png'
 import { usePreAtendimento } from '~/composables/usePreAtendimento'
 import { fetchAddressByCep } from '~/utils/cep'
+import { isValidCpf } from '~/utils/cpf'
 import { maskCep, maskCpf, maskNumero, maskPlaca, maskRenavam, onlyDigits } from '~/utils/masks'
 import { buildWhatsappMessage } from '~/utils/whatsappMessage'
 import {
@@ -111,6 +112,13 @@ async function lookupClienteByCpf(cpf: string) {
   if (digits.length !== 11) {
     lastLookedUpCpf.value = ''
     clienteFeedback.value = ''
+    return
+  }
+
+  if (!isValidCpf(digits)) {
+    lastLookedUpCpf.value = ''
+    clienteFeedback.value = ''
+    errors.value.cpfCliente = 'CPF do cliente inválido.'
     return
   }
 

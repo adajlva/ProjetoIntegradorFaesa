@@ -1,3 +1,4 @@
+import { isValidCpf } from './cpf'
 import { onlyDigits } from './masks'
 
 export interface VistoriaFormData {
@@ -28,10 +29,6 @@ export type VistoriaFormField = Exclude<
 
 export type VistoriaFormErrors = Partial<Record<VistoriaFormField, string>>
 
-function hasCpfDigits(cpf: string): boolean {
-  return onlyDigits(cpf).length === 11
-}
-
 function isValidPlaca(placa: string): boolean {
   const normalized = placa.toUpperCase().replace(/[^A-Z0-9]/g, '')
   return normalized.length === 7
@@ -46,16 +43,16 @@ export function validateVistoriaForm(data: VistoriaFormData): VistoriaFormErrors
     errors.nomeCliente = 'Informe o nome do cliente.'
   }
 
-  if (!hasCpfDigits(data.cpfCliente)) {
-    errors.cpfCliente = 'CPF do cliente deve ter 11 dígitos.'
+  if (!isValidCpf(data.cpfCliente)) {
+    errors.cpfCliente = 'CPF do cliente inválido.'
   }
 
   if (data.titularDiferente) {
     if (!data.nomeTitularLaudo.trim()) {
       errors.nomeTitularLaudo = 'Informe o nome do titular do laudo.'
     }
-    if (!hasCpfDigits(data.cpfTitularLaudo)) {
-      errors.cpfTitularLaudo = 'CPF do titular do laudo deve ter 11 dígitos.'
+    if (!isValidCpf(data.cpfTitularLaudo)) {
+      errors.cpfTitularLaudo = 'CPF do titular do laudo inválido.'
     }
   }
 
@@ -63,8 +60,8 @@ export function validateVistoriaForm(data: VistoriaFormData): VistoriaFormErrors
     if (!data.nomeCondutor.trim()) {
       errors.nomeCondutor = 'Informe o nome do condutor.'
     }
-    if (!hasCpfDigits(data.cpfCondutor)) {
-      errors.cpfCondutor = 'CPF do condutor deve ter 11 dígitos.'
+    if (!isValidCpf(data.cpfCondutor)) {
+      errors.cpfCondutor = 'CPF do condutor inválido.'
     }
   }
 

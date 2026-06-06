@@ -1,4 +1,5 @@
 import type { VistoriaFormData } from '~/utils/validation'
+import { validateVistoriaForm } from '~/utils/validation'
 
 interface SavePreAtendimentoBody {
   form: VistoriaFormData
@@ -10,6 +11,13 @@ export default defineEventHandler(async (event) => {
 
   if (!body?.form || typeof body.mensagemWhatsapp !== 'string') {
     throw createError({ statusCode: 400, statusMessage: 'Payload inválido.' })
+  }
+
+  const validationErrors = validateVistoriaForm(body.form)
+  const firstError = Object.values(validationErrors)[0]
+
+  if (firstError) {
+    throw createError({ statusCode: 400, statusMessage: firstError })
   }
 
   try {

@@ -1,4 +1,5 @@
 import type { VistoriaFormData } from '~/utils/validation'
+import { isValidCpf } from '~/utils/cpf'
 import { onlyDigits } from '~/utils/masks'
 
 function normalizePlaca(placa: string) {
@@ -51,5 +52,5 @@ export function formToPreAtendimentoPayload(
 }
 
 export function isValidCpfDigits(cpf: string) {
-  return /^\d{11}$/.test(cpf)
+  return isValidCpf(cpf)
 }
