@@ -137,3 +137,39 @@ export function resolveCondutor(data: VistoriaFormData) {
     cpf: data.cpfCondutor.trim(),
   }
 }
+
+
+export function sanitizeInput(value: string): string {
+ if (typeof value !== 'string') return value
+ let previous: string
+ let current = value
+ do {
+ previous = current
+ current = current
+ .replace(/<!--[\s\S]*?-->/g, '') // remove comments
+ .replace(/<[^>]*>/g, '') // remove tags
+ } while (current !== previous)
+ return current.trim()
+}
+export function sanitizeVistoriaForm(data: VistoriaFormData): VistoriaFormData {
+ return {
+ nomeCliente: sanitizeInput(data.nomeCliente),
+ cpfCliente: sanitizeInput(data.cpfCliente),
+ titularDiferente: data.titularDiferente,
+ nomeTitularLaudo: sanitizeInput(data.nomeTitularLaudo),
+ cpfTitularLaudo: sanitizeInput(data.cpfTitularLaudo),
+ condutorMesmoCliente: data.condutorMesmoCliente,
+ nomeCondutor: sanitizeInput(data.nomeCondutor),
+ cpfCondutor: sanitizeInput(data.cpfCondutor),
+ cep: sanitizeInput(data.cep),
+ logradouro: sanitizeInput(data.logradouro),
+ complemento: sanitizeInput(data.complemento),
+ bairro: sanitizeInput(data.bairro),
+ cidade: sanitizeInput(data.cidade),
+ uf: sanitizeInput(data.uf),
+ numeroEndereco: sanitizeInput(data.numeroEndereco),
+ placa: sanitizeInput(data.placa),
+ renavam: sanitizeInput(data.renavam),
+ observacoesDocumento: sanitizeInput(data.observacoesDocumento),
+ }
+}
